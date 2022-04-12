@@ -3,9 +3,10 @@ package com.common.transform;
 
 import com.common.plug.MTConfig;
 
-import groovyjarjarasm.asm.ClassVisitor;
-import groovyjarjarasm.asm.MethodVisitor;
-import groovyjarjarasm.asm.Opcodes;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+
 
 class ClassInjectTimeVisitor extends ClassVisitor {
 
@@ -22,6 +23,7 @@ class ClassInjectTimeVisitor extends ClassVisitor {
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
+//        return mv;
         return new MethodAdapterVisitor(mv, access, name, desc, className,mtConfig);
     }
 

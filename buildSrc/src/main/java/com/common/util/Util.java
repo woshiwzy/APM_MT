@@ -1,12 +1,8 @@
-package com.common;
+package com.common.util;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
-/**
- * Created by wangzy on 2021/11/14
- * description:
- */
 public class Util {
 
 

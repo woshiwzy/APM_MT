@@ -19,17 +19,22 @@ repositories {
 
 dependencies {
     implementation gradleApi()
+
 //    implementation 'com.android.tools.build:gradle:4.1.1'
     implementation 'com.android.tools.build:gradle:7.0.3'
-    implementation files('libs/groovy-all-jdk14-1.6.9.jar')
+//    implementation files('libs/groovy-all-jdk14-1.6.9.jar')
+    implementation files('libs/commons-io-2.6.jar')
+    implementation files('libs/asm-9.2.jar')
+    implementation files('libs/asm-commons-9.2.jar')
+    implementation files('libs/asm-util-9.2.jar')
     // retrofit
 //    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
 //    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 //    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
 //    implementation 'com.android.tools.build:gradle:3.3.2'
 
-    testImplementation 'org.ow2.asm:asm:7.1'
-    testImplementation 'org.ow2.asm:asm-commons:7.1'
+//    testImplementation 'org.ow2.asm:asm:7.1'
+//    testImplementation 'org.ow2.asm:asm-commons:7.1'
 }
 
 //group 'com.xiangxue.gradle'

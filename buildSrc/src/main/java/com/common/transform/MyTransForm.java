@@ -10,7 +10,7 @@ import com.android.build.api.transform.TransformInput;
 import com.android.build.api.transform.TransformInvocation;
 import com.android.build.api.transform.TransformOutputProvider;
 import com.android.build.gradle.internal.pipeline.TransformManager;
-import com.common.Util;
+import com.common.util.Util;
 import com.common.plug.MTConfig;
 
 import java.io.File;
@@ -20,11 +20,12 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Set;
 
-import groovyjarjarasm.asm.ClassReader;
-import groovyjarjarasm.asm.ClassWriter;
 
-import static com.common.Util.redlog;
+import static com.common.util.Util.redlog;
 
+import org.apache.commons.io.FileUtils;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
 
 
 public class MyTransForm extends Transform {
@@ -59,45 +60,72 @@ public class MyTransForm extends Transform {
 
             for(JarInput jarInput : input.getJarInputs()) {
                 File dest = outputProvider.getContentLocation(jarInput.getFile().getAbsolutePath(), jarInput.getContentTypes(), jarInput.getScopes(), Format.JAR);
-
                 Util.redlog("jarInput===>:"+jarInput.getFile());
                 //将修改过的字节码copy到dest，就可以实现编译期间干预字节码的目的了
-//                FileUtils.copyFile(jarInput.getFile(), dest);
+                FileUtils.copyFile(jarInput.getFile(), dest);//这里展示不处理jar直接拷贝过去
             }
-
 
             for(DirectoryInput directoryInput : input.getDirectoryInputs()) {
                 File dest = outputProvider.getContentLocation(directoryInput.getName(), directoryInput.getContentTypes(), directoryInput.getScopes(), Format.DIRECTORY);
                 //将修改过的字节码copy到dest，就可以实现编译期间干预字节码的目的了
                 Util.redlog("directoryInput===>:"+directoryInput.getFile()+" ===> "+dest);
+                processInjectDirFiles(directoryInput.getFile(),dest,directoryInput.getFile(),mtConfig);
+
 //                FileUtils.copyDirectory(directoryInput.getFile(), dest);
-                File[] allfiles = directoryInput.getFile().listFiles();
-                if(null!=allfiles ){
-                    for(File f:allfiles){
-                        Util.redlog("文件夹下的文件:"+f.getAbsolutePath());
-                    }
-                }
+//                File[] allfiles = directoryInput.getFile().listFiles();
+//                if(null!=allfiles ){
+//                    for(File f:allfiles){
+//                        Util.redlog("文件夹下的文件:"+f.getAbsolutePath());
+//                    }
+//                }
+
             }
 
-
         }
+    }
 
+    /**
+     * 递归处理各种
+     * @param rootDic
+     * @param rootDest
+     * @param processingFile
+     * @param mtConfig
+     */
+    private void processInjectDirFiles(File rootDic,File rootDest,File processingFile,MTConfig mtConfig){
 
+        if(null!=processingFile && processingFile.isFile()){
 
+            boolean needPlug=mtConfig.needPlug(processingFile.getAbsolutePath());
+            Util.redlog("正在处理文件："+needPlug+"  ----> "+processingFile.getAbsolutePath());
+            Util.redlog("路径转移："+rootDic+"  ----> "+rootDest);
+            //在此处理插桩
+
+//            路径转移：D:\workspace\workspace\testSpace\APM_MT\app\build\intermediates\javac\debug\classes  ---->
+//            D:\workspace\workspace\testSpace\APM_MT\app\build\intermediates\transforms\_MTTransForm_\debug\2
+
+            processInject(rootDic.getAbsolutePath(),processingFile,rootDest,mtConfig);
+
+        }else  if(null!=processingFile && processingFile.isDirectory()){
+            File[] subFiels=processingFile.listFiles();
+            for(File tempFile:subFiels){
+                processInjectDirFiles(rootDic,rootDest,tempFile,mtConfig);
+            }
+        }
     }
 
     /**
      * 注入代码
-     * @param src
+     * @param file
      * @param dest
      * @param mtConfig
      */
-    private void processInject(File src, File dest, MTConfig mtConfig) {
+    private void processInject(String dir,File file, File dest, MTConfig mtConfig) {
         try {
 
-            String dir = src.getAbsolutePath();
-            File[] allFiles = src.listFiles();
-            for (File file : allFiles) {
+//            String dir = file.getAbsolutePath();
+//            String dir = src.getAbsolutePath();
+//            File[] allFiles = src.listFiles();
+//            for (File file : allFiles) {
 
                 if(file.isDirectory()){
                     return;
@@ -126,7 +154,7 @@ public class MyTransForm extends Transform {
                 FileOutputStream fos = new FileOutputStream(outFile);
                 fos.write(newClassBytes);
                 fos.close();
-            }
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -7,7 +7,6 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 
 import java.util.Collections;
-import java.util.function.Consumer;
 
 class MTPlug implements Plugin<Project> {
 
@@ -19,6 +18,7 @@ class MTPlug implements Plugin<Project> {
 //        project.getExtensions().getByType(AppExtension.class).registerTransform(new MyTransForm(mtConfig));
 
         AppExtension appExtension = (AppExtension)project.getProperties().get("android");
+
         appExtension.registerTransform(new MyTransForm(mtConfig), Collections.EMPTY_LIST);
 
         //配置完成后才能读取到mtconfig信息
