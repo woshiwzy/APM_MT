@@ -1,5 +1,7 @@
 package com.common.transform;
 
+import static com.common.util.Util.redlog;
+
 import com.android.build.api.transform.DirectoryInput;
 import com.android.build.api.transform.Format;
 import com.android.build.api.transform.JarInput;
@@ -10,22 +12,18 @@ import com.android.build.api.transform.TransformInput;
 import com.android.build.api.transform.TransformInvocation;
 import com.android.build.api.transform.TransformOutputProvider;
 import com.android.build.gradle.internal.pipeline.TransformManager;
-import com.common.util.Util;
 import com.common.plug.MTConfig;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Set;
-
-
-import static com.common.util.Util.redlog;
+import com.common.util.Util;
 
 import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Set;
 
 
 public class MyTransForm extends Transform {
@@ -34,7 +32,7 @@ public class MyTransForm extends Transform {
     private MTConfig mtConfig;
 
     public MyTransForm(MTConfig mtConfig) {
-        this.mtConfig=mtConfig;
+        this.mtConfig = mtConfig;
     }
 
     @Override
@@ -45,7 +43,6 @@ public class MyTransForm extends Transform {
     @Override
     public void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         super.transform(transformInvocation);
-
         redlog("自定义transform 正在运行");
 
         //当前是否是增量编译
@@ -56,112 +53,128 @@ public class MyTransForm extends Transform {
         Collection<TransformInput> referencedInputs = transformInvocation.getReferencedInputs();
         //OutputProvider管理输出路径，如果消费型输入为空，你会发现OutputProvider == null
         TransformOutputProvider outputProvider = transformInvocation.getOutputProvider();
-        for(TransformInput input : inputs) {
+        for (TransformInput input : inputs) {
 
-            for(JarInput jarInput : input.getJarInputs()) {
+            for (JarInput jarInput : input.getJarInputs()) {
                 File dest = outputProvider.getContentLocation(jarInput.getFile().getAbsolutePath(), jarInput.getContentTypes(), jarInput.getScopes(), Format.JAR);
-                Util.redlog("jarInput===>:"+jarInput.getFile());
+//                Util.redlog("jarInput===>:" + jarInput.getFile());
                 //将修改过的字节码copy到dest，就可以实现编译期间干预字节码的目的了
                 FileUtils.copyFile(jarInput.getFile(), dest);//这里展示不处理jar直接拷贝过去
             }
 
-            for(DirectoryInput directoryInput : input.getDirectoryInputs()) {
+            for (DirectoryInput directoryInput : input.getDirectoryInputs()) {
                 File dest = outputProvider.getContentLocation(directoryInput.getName(), directoryInput.getContentTypes(), directoryInput.getScopes(), Format.DIRECTORY);
                 //将修改过的字节码copy到dest，就可以实现编译期间干预字节码的目的了
-                Util.redlog("directoryInput===>:"+directoryInput.getFile()+" ===> "+dest);
-                processInjectDirFiles(directoryInput.getFile(),dest,directoryInput.getFile(),mtConfig);
-
-//                FileUtils.copyDirectory(directoryInput.getFile(), dest);
-//                File[] allfiles = directoryInput.getFile().listFiles();
-//                if(null!=allfiles ){
-//                    for(File f:allfiles){
-//                        Util.redlog("文件夹下的文件:"+f.getAbsolutePath());
-//                    }
-//                }
-
+                Util.redlog("directoryInput===>:" + directoryInput.getFile() + " ===> " + dest);
+                processInjectDirFiles(directoryInput.getFile(), dest, directoryInput.getFile(), mtConfig);
             }
 
         }
     }
 
     /**
-     * 递归处理各种
+     * 递归处理各种class 文件
+     *
      * @param rootDic
      * @param rootDest
      * @param processingFile
      * @param mtConfig
      */
-    private void processInjectDirFiles(File rootDic,File rootDest,File processingFile,MTConfig mtConfig){
-
-        if(null!=processingFile && processingFile.isFile()){
-
-            boolean needPlug=mtConfig.needPlug(processingFile.getAbsolutePath());
-            Util.redlog("正在处理文件："+needPlug+"  ----> "+processingFile.getAbsolutePath());
-            Util.redlog("路径转移："+rootDic+"  ----> "+rootDest);
+    private void processInjectDirFiles(File rootDic, File rootDest, File processingFile, MTConfig mtConfig) {
+        if (null != processingFile && processingFile.isFile()) {
+            boolean needPlug = mtConfig.needPlug(processingFile.getAbsolutePath());
+            Util.redlog("正在处理文件：" + needPlug + "  ----> " + processingFile.getAbsolutePath());
+            Util.redlog("路径转移：" + rootDic + "  ----> " + rootDest);
             //在此处理插桩
-
 //            路径转移：D:\workspace\workspace\testSpace\APM_MT\app\build\intermediates\javac\debug\classes  ---->
 //            D:\workspace\workspace\testSpace\APM_MT\app\build\intermediates\transforms\_MTTransForm_\debug\2
-
-            processInject(rootDic.getAbsolutePath(),processingFile,rootDest,mtConfig);
-
-        }else  if(null!=processingFile && processingFile.isDirectory()){
-            File[] subFiels=processingFile.listFiles();
-            for(File tempFile:subFiels){
-                processInjectDirFiles(rootDic,rootDest,tempFile,mtConfig);
+            processInject(rootDic.getAbsolutePath(), processingFile, rootDest, mtConfig);
+        } else if (null != processingFile && processingFile.isDirectory()) {
+            File[] subFiels = processingFile.listFiles();
+            for (File tempFile : subFiels) {
+                processInjectDirFiles(rootDic, rootDest, tempFile, mtConfig);
             }
         }
     }
 
     /**
      * 注入代码
-     * @param file
-     * @param dest
-     * @param mtConfig
+     *
+     * @param processingFile 正在transform文件
+     * @param dest transform的下一个输入地址
+     * @param mtConfig 配置信息
      */
-    private void processInject(String dir,File file, File dest, MTConfig mtConfig) {
+    private void processInject(String inputDir, File processingFile, File dest, MTConfig mtConfig) {
         try {
-
-//            String dir = file.getAbsolutePath();
-//            String dir = src.getAbsolutePath();
-//            File[] allFiles = src.listFiles();
-//            for (File file : allFiles) {
-
-                if(file.isDirectory()){
-                    return;
-                }
-
-                System.err.println("类文件路径:"+file.getAbsolutePath()+" 文件是否存在："+(file.exists()));
-
-                FileInputStream fis = new FileInputStream(file);
-                //插桩
+            if (processingFile.isDirectory()) {
+                return;
+            }
+            //判断该类是否需要插装
+            boolean needPlug = mtConfig.needPlug(processingFile.getAbsolutePath());
+            Util.redlog("类文件路径:" + processingFile.getAbsolutePath() + " 文件是否存在：" + (processingFile.exists()) + " 是否需要插桩：" + needPlug);
+            File outFile =getOutPutFile(processingFile, inputDir,dest);
+            if (needPlug) {
+                FileInputStream fis = new FileInputStream(processingFile);
+                //类读取器
                 ClassReader cr = new ClassReader(fis);
                 // 写出器
                 ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-
                 //分析，处理结果写入cw
-                cr.accept(new ClassInjectTimeVisitor(cw, file.getName(),mtConfig), ClassReader.EXPAND_FRAMES);
-
+                cr.accept(new ClassInjectTimeVisitor(cw, processingFile.getName(), mtConfig), ClassReader.EXPAND_FRAMES);
                 byte[] newClassBytes = cw.toByteArray();
-                //class文件绝对地址
-                String absolutePath = file.getAbsolutePath();
-                //class文件绝对地址去掉目录，得到全类名
-                String fullClassPath = absolutePath.replace(dir, "");
-                File outFile = new File(dest, fullClassPath);
-
+//             //class文件绝对地址去掉目录，得到全类名
                 mkdirs(outFile.getParentFile());
+                FileUtils.writeByteArrayToFile(outFile,newClassBytes);
+            }else {
+                FileUtils.copyFile(processingFile,outFile);
+            }
 
-                FileOutputStream fos = new FileOutputStream(outFile);
-                fos.write(newClassBytes);
-                fos.close();
-//            }
+//
+//            FileInputStream fis = new FileInputStream(processingFile);
+//            //插桩
+//            ClassReader cr = new ClassReader(fis);
+//            // 写出器
+//            ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+//
+//            //分析，处理结果写入cw
+//            cr.accept(new ClassInjectTimeVisitor(cw, processingFile.getName(), mtConfig), ClassReader.EXPAND_FRAMES);
+//
+//            byte[] newClassBytes = cw.toByteArray();
+//            //class文件绝对地址
+//            String absolutePath = processingFile.getAbsolutePath();
+//            //class文件绝对地址去掉目录，得到全类名
+//            String fullClassPath = absolutePath.replace(inputDir, "");
+//            File outFile = new File(dest, fullClassPath);
+//
+//            mkdirs(outFile.getParentFile());
+//
+//            FileOutputStream fos = new FileOutputStream(outFile);
+//            fos.write(newClassBytes);
+//            fos.close();
+
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-
     }
+
+
+    /**
+     * 获取下一个tranform的输入路径
+     * @param processingFile
+     * @param rootDicDir
+     * @param dest
+     * @return
+     */
+    private static File getOutPutFile(File processingFile,String rootDicDir,File dest){
+        String absolutePath = processingFile.getAbsolutePath();
+        String fullClassPath = absolutePath.replace(rootDicDir, "");
+        File outFile = new File(dest, fullClassPath);
+        return  outFile;
+    }
+
+
 
     public static File mkdirs(File folder) {
         if (!folder.mkdirs() && !folder.isDirectory()) {
@@ -184,7 +197,7 @@ public class MyTransForm extends Transform {
 
     /**
      * 应用transform范围
-     *
+     * 只处理本项目
      * @return
      */
     @Override

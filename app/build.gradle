@@ -6,17 +6,16 @@ plugins {
 MTConfig {
 
     pkgs = [
-            "com.sand.apm.mt",
-            "com.apm.tools"
+            "com.sand.apm.mt"
     ]//这个包下面的方法都插桩
     whiteList = []//这里的方法都插桩
     blackList = []//这里的方法都不插桩
     excludeMethods = [//这些方法都不插桩
-                      "abc.abc.a",
-                      "cba.eee.c"
+                      "<init>"
     ]
     excludeClasses = [
-            "BuildConfig.class"
+            "BuildConfig.class",
+            "Tool.class"
     ]
 }
 

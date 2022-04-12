@@ -5,10 +5,6 @@ plugins {
 }
 
 repositories {
-//    maven {
-//        url 'http://localhost:8081/artifactory/android_group/'
-//    }
-
     maven { url 'https://dl.google.com/dl/android/maven2/' }
     mavenCentral()
     google()
@@ -20,23 +16,17 @@ repositories {
 dependencies {
     implementation gradleApi()
 
-//    implementation 'com.android.tools.build:gradle:4.1.1'
     implementation 'com.android.tools.build:gradle:7.0.3'
-//    implementation files('libs/groovy-all-jdk14-1.6.9.jar')
-    implementation files('libs/commons-io-2.6.jar')
-    implementation files('libs/asm-9.2.jar')
+    implementation files('libs/commons-io-2.6.jar')//不要用自带的io工具，有冲突
+    implementation files('libs/asm-9.2.jar')//不要用自带的asm api，有冲突
     implementation files('libs/asm-commons-9.2.jar')
     implementation files('libs/asm-util-9.2.jar')
     // retrofit
 //    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
 //    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 //    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
-//    implementation 'com.android.tools.build:gradle:3.3.2'
 
-//    testImplementation 'org.ow2.asm:asm:7.1'
-//    testImplementation 'org.ow2.asm:asm-commons:7.1'
 }
 
-//group 'com.xiangxue.gradle'
 group 'com.sand.gradle'
-version '1.0.2'
+version '1.0.0'
