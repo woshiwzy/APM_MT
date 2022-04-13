@@ -1,7 +1,7 @@
 package com.common.transform;
 
 import com.common.plug.MTConfig;
-import com.common.util.Util;
+import com.common.util.MTLog;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.MethodVisitor;
@@ -32,7 +32,7 @@ class MethodAdapterVisitor extends AdviceAdapter {
     @Override
     protected void onMethodEnter() {
 
-        Util.redlog("方法进入:onMethodEnter "+methodName);
+        MTLog.redlog("方法进入:onMethodEnter "+methodName);
 //             methodName
             //储备本地变量备用
             mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
@@ -45,7 +45,7 @@ class MethodAdapterVisitor extends AdviceAdapter {
 
     @Override
     protected void onMethodExit(int opcode) {
-           Util.redlog("方法进入:onMethodExit "+methodName);
+           MTLog.redlog("方法进入:onMethodExit "+methodName);
 
             mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
             index = newLocal(Type.LONG_TYPE);

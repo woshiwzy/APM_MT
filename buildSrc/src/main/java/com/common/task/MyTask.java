@@ -6,7 +6,7 @@ import org.gradle.api.tasks.TaskAction;
 public class MyTask extends DefaultTask {
 
     public MyTask() {
-        this.setGroup("a_sand");
+        this.setGroup("MT");
     }
 
     @TaskAction

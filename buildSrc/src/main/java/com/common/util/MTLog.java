@@ -3,11 +3,14 @@ package com.common.util;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
-public class Util {
+public class MTLog {
 
 
     public static void redlog(String content) {
         System.err.println(content);
+    }
+    public static void log(String content) {
+        System.out.println(content);
     }
 
 

@@ -5,6 +5,8 @@ plugins {
 
 MTConfig {
 
+    work=true //开关
+
     pkgs = [
             "com.sand.apm.mt"
     ]//这个包下面的方法都插桩
