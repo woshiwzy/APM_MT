@@ -6,12 +6,17 @@ import java.util.Set;
 
 public class MTConfig {
 
+
+    public static final String MTClassname="MTCallBack";
+    public static final String MTMethod="done";
+
     public boolean work=true;//开关
     public Set<String> pkgs;//以这个包名开始的话，会被插桩
     public Set<String> excludeMethods;//这个集合里面的方法不插桩
     public Set<String> excludeClasses;//这个集合里面的class 不插桩
     public Set<String> whiteList;//白名单里面的
     public Set<String> blackList;//黑名单中不需要插桩
+    public  String mtCallBackPackage;//mt callback 类路径
 
     public boolean needPlug(String fullPathClass){
         if(null==fullPathClass){

@@ -6,7 +6,7 @@ plugins {
 MTConfig {
 
     work=true //开关
-
+    mtCallBackPackage="com.myapm.callback"
     pkgs = [
             "com.sand.apm.mt"
     ]//这个包下面的方法都插桩
@@ -54,4 +54,5 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'com.orhanobut:logger:2.2.0'
 }
