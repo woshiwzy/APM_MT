@@ -48,7 +48,9 @@ public class CreateCallBackTask extends DefaultTask {
 
             MTLog.redlog("生成代码类运行结束----->>" + file.getAbsolutePath());
 
-            String javaClass = "package " + mtConfig.mtCallBackPackage + ";\n\n" +
+            String javaClass =
+                    "package " + mtConfig.mtCallBackPackage + ";\n" +
+                    "import android.util.Log;\n" +
                     "\n\n" +
                     "/*\n" +
                     "*这个类是MT插件自动生成的，done方法将被注入到方法类中" + "\n\n" +
@@ -59,7 +61,16 @@ public class CreateCallBackTask extends DefaultTask {
                     "public class MTCallBack{" +
                     "\n\n" +
                     "   public static void " + callStaticMethod + "(long start){" +
+
                     "\n\n" +
+                    "   long end =  System.currentTimeMillis();\n\n"+
+                    "   long cost=end-start;\n\n"+
+                    "   StackTraceElement[] sts = Thread.currentThread().getStackTrace();\n\n"+
+                    "   //sts[3] 就是mtDone被调用所在的方法，也可以循环向上查询更深的栈层级\n\n"+
+                    "   String currentMethodName = sts[3].getClassName() + \".\" + sts[3].getMethodName();\n\n"+
+                    "   String mtLog = currentMethodName + \" 耗时:\" + cost+ \"线程名:\"+Thread.currentThread().getName();\n\n"+
+                    "   System.out.println(mtLog);\n\n"+
+                    "   Log.d(\"mt\", mtLog);\n\n"+
                     "   }" +
                     "\n\n" +
                     "}";

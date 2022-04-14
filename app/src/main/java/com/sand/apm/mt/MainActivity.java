@@ -22,7 +22,14 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.buttonTest).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Test.method1();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Test.method1();
+                    }
+                }).start();
+
             }
         });
     }
