@@ -13,7 +13,8 @@ MTConfig {
     whiteList = []//这里的方法都插桩
     blackList = []//这里的方法都不插桩
     excludeMethods = [//这些方法都不插桩
-                      "<init>"
+                      "<init>",
+                      "<clinit>"
     ]
     excludeClasses = [
             "BuildConfig.class",
@@ -47,7 +48,6 @@ android {
 }
 
 dependencies {
-
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'

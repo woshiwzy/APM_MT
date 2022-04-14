@@ -24,7 +24,6 @@ class MethodAdapterVisitor extends AdviceAdapter {
         methodName = name;
         this.className = className;
         this.mtConfig = mtConfig;
-
     }
 
 
@@ -59,11 +58,8 @@ class MethodAdapterVisitor extends AdviceAdapter {
     @Override
     protected void onMethodExit(int opcode) {
         MTLog.redlog("方法进入:onMethodExit " + methodName);
-
         mv.visitVarInsn(LLOAD, start);
-
         String owner = this.mtConfig.mtCallBackPackage.replace(".", "/") + "/" + MTConfig.MTClassname;
-
         mv.visitMethodInsn(INVOKESTATIC, owner, MTConfig.MTMethod, "(J)V", false);
 
     }

@@ -8,7 +8,8 @@ public class MTConfig {
 
 
     public static final String MTClassname="MTCallBack";
-    public static final String MTMethod="done";
+
+    public static final String MTMethod="mtDone";
 
     public boolean work=true;//开关
     public Set<String> pkgs;//以这个包名开始的话，会被插桩

@@ -1,20 +1,16 @@
-com/common/task/MyTask.java
- com.common.task.MyTask
-com/common/util/PathUtils.java
- com.common.util.PathUtils
-com/common/util/MTLog.java
- com.common.util.MTLog
-com/common/task/MyTask2.java
- com.common.task.MyTask2
 com/common/task/CreateCallBackTask.java
  com.common.task.CreateCallBackTask
-com/common/plug/MTPlug.java
- com.common.plug.MTPlug
-com/common/transform/MTransForm.java
- com.common.transform.MTransForm
-com/common/plug/MTConfig.java
- com.common.plug.MTConfig
+com/common/util/PathUtils.java
+ com.common.util.PathUtils
 com/common/transform/MethodAdapterVisitor.java
  com.common.transform.MethodAdapterVisitor
+com/common/util/MTLog.java
+ com.common.util.MTLog
+com/common/transform/MTransForm.java
+ com.common.transform.MTransForm
 com/common/transform/ClassInjectTimeVisitor.java
  com.common.transform.ClassInjectTimeVisitor
+com/common/plug/MTConfig.java
+ com.common.plug.MTConfig
+com/common/plug/MTPlug.java
+ com.common.plug.MTPlug

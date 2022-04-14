@@ -29,7 +29,7 @@ public class CreateCallBackTask extends DefaultTask {
         try {
 
             String mtPackage = mtConfig.mtCallBackPackage;//自动生成的包
-            String callStaticMethod = "done";//注入的方法
+            String callStaticMethod = MTConfig.MTMethod;//注入的方法
 
             String fileChildPath = "src/main/java/" + mtPackage.replace(".", "/");
             MTLog.redlog("自动生成的类路径----->>" + fileChildPath);
