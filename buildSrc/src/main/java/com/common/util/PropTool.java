@@ -2,7 +2,9 @@ package com.common.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -37,9 +39,21 @@ public class PropTool {
         return propMap;
     }
 
-    public static boolean writeProper2File(HashMap<String,String> promap,File proFile){
-
-
+    public static boolean writeProper2File(HashMap<String,String> promap,File propertiesFile){
+        try {
+            Properties pro = new Properties();
+            for(Map.Entry<String,String> entry:promap.entrySet()){
+                String key=entry.getKey();
+                String value=entry.getValue();
+                pro.setProperty(key, value);
+            }
+            FileOutputStream fout=new FileOutputStream(propertiesFile);
+            pro.store(fout, "Add MT plug config!!");
+            fout.close();
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return false;
     }
 

@@ -1,6 +1,5 @@
 package com.common.transform;
 
-import static com.common.util.MTLog.redLog;
 
 import com.android.build.api.transform.DirectoryInput;
 import com.android.build.api.transform.Format;
@@ -36,17 +35,13 @@ public class MTransForm extends Transform {
 
     @Override
     public String getName() {
-        //"\33[42;1m"+"文字"+"\n\33[0m"
         return "_______MTransForm______Running____";
     }
 
     @Override
     public void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         super.transform(transformInvocation);
-        redLog("MTransForm 正在运行");
-
-
-
+        MTLog.orangeLog("********************Transform Start********************");
         //当前是否是增量编译
         boolean isIncremental = transformInvocation.isIncremental();
         //消费型输入，可以从中获取jar包和class文件夹路径。需要输出给下一个任务
@@ -66,16 +61,17 @@ public class MTransForm extends Transform {
             for (DirectoryInput directoryInput : input.getDirectoryInputs()) {
                 File dest = outputProvider.getContentLocation(directoryInput.getName(), directoryInput.getContentTypes(), directoryInput.getScopes(), Format.DIRECTORY);
                 ////如果需要在此处处理字节码，就可以实现编译期间干预字节码的目的了
-                MTLog.redLog("directoryInput===>:" + directoryInput.getFile() + " ===> " + dest);
+                MTLog.redLog("Injectinging :\n" + directoryInput.getFile() + "\n done,will copy to:\n" + dest+"\n");
                 processInjectDirFiles(directoryInput.getFile(), dest, directoryInput.getFile(), mtConfig);
             }
 
         }
+        MTLog.orangeLog("********************Transform Done********************");
     }
 
+
+
     /**
-     * 递归处理各种class 文件
-     *
      * @param rootDic
      * @param rootDest
      * @param processingFile
@@ -93,31 +89,28 @@ public class MTransForm extends Transform {
     }
 
     /**
-     * 注入代码
-     *
-     * @param processingFile 正在transform文件
-     * @param dest transform的下一个输入地址
-     * @param mtConfig 配置信息
+     * @param processingFile
+     * @param dest
+     * @param mtConfig
      */
     private void processInject(String inputDir, File processingFile, File dest, MTConfig mtConfig) {
         try {
             if (processingFile.isDirectory()) {
                 return;
             }
-            //判断该类是否需要插装
             boolean needPlug = mtConfig.needPlug(processingFile.getAbsolutePath());
-            MTLog.redLog("类文件路径:" + processingFile.getAbsolutePath() + " 文件是否存在：" + (processingFile.exists()) + " 是否需要插桩：" + needPlug);
+            MTLog.blueLog("Injecting class:" + processingFile.getAbsolutePath() + " file exist：" + (processingFile.exists()) + " need inject：" + needPlug);
             File outFile =getOutPutFile(processingFile, inputDir,dest);
             if (needPlug) {
                 FileInputStream fis = new FileInputStream(processingFile);
-                //类读取器
+                //class reader
                 ClassReader cr = new ClassReader(fis);
-                // 写出器
+                //class writer
                 ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-                //分析，处理结果写入cw
+                //combine reader wirter visitor
                 cr.accept(new ClassInjectTimeVisitor(cw, processingFile.getName(), mtConfig), ClassReader.EXPAND_FRAMES);
                 byte[] newClassBytes = cw.toByteArray();
-//             //class文件绝对地址去掉目录，得到全类名
+//             //mkdirs
                 mkdirs(outFile.getParentFile());
                 FileUtils.writeByteArrayToFile(outFile,newClassBytes);
             }else {
@@ -132,7 +125,6 @@ public class MTransForm extends Transform {
 
 
     /**
-     * 获取下一个tranform的输入路径
      * @param processingFile
      * @param rootDicDir
      * @param dest
@@ -156,19 +148,18 @@ public class MTransForm extends Transform {
 
 
     /**
-     * 处理class文件
+     * Inject class only
      *
      * @return
      */
     @Override
     public Set<QualifiedContent.ContentType> getInputTypes() {
-        return TransformManager.CONTENT_CLASS;//只处理class文件
+        return TransformManager.CONTENT_CLASS;//
     }
 
 
     /**
-     * 应用transform范围
-     * 只处理本项目
+     * Inject this project only
      * @return
      */
     @Override
@@ -178,7 +169,6 @@ public class MTransForm extends Transform {
 
 
     /**
-     * 是否增量更新
      * @return
      */
     @Override

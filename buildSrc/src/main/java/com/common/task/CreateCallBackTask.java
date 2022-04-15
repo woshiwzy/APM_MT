@@ -1,6 +1,7 @@
 package com.common.task;
 
 import com.common.plug.MTConfig;
+import com.common.util.ColorLog;
 import com.common.util.MTLog;
 
 import org.apache.commons.io.FileUtils;
@@ -30,7 +31,9 @@ public class CreateCallBackTask extends DefaultTask {
             String callStaticMethod = MTConfig.MTMethod;//注入的方法
 
             String fileChildPath = "src/main/java/" + mtPackage.replace(".", "/");
-            MTLog.yellowLog("自动生成的类路径----->>" + fileChildPath);
+            MTLog.yellowLog("------------------------------------------");
+            MTLog.purpLog("MT will create a callback class here:" + ColorLog.yellow(fileChildPath));
+            MTLog.yellowLog("------------------------------------------");
 
             String javaFilePath = fileChildPath + "/MTCallBack.java";
             File file = new File(getProject().getProjectDir(), javaFilePath);

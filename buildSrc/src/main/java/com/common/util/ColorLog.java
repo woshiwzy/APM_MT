@@ -33,7 +33,7 @@ public class ColorLog {
         return getFormatLogString(log, 31, 0);
     }
     public static String yellow(String log){
-        return getFormatLogString(log, 32, 0);
+        return getFormatLogString(log, 32, 1);
     }
     public static String orange(String log){
         return getFormatLogString(log, 33, 0);
