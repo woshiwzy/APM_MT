@@ -57,7 +57,7 @@ public class MTPlug implements Plugin<Project> {
                 CreateCallBackTask createCodeTask = project.getTasks().create("CreateCallBackTask", CreateCallBackTask.class);
                 createCodeTask.setMtConfig(mtConfig);
                 for (ApplicationVariant variant : variants) {
-                    MTLog.redLog("Add :" + variant.getName() + " for generate java code task");
+                    MTLog.redLog("Add generate task for " + variant.getName());
                     variant.registerJavaGeneratingTask(createCodeTask, new File(project.getProjectDir(), "src/main/java"));
                 }
 

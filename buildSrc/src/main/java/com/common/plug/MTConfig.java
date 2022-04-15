@@ -39,10 +39,8 @@ public class MTConfig {
         }
 
         //如果以指定的报名开始,会被插桩
-//        Util.redlog("full path repalce1:"+fullPathClass);
         String prefex1="intermediates\\javac\\debug\\classes\\";//debug class路径前缀
         String classPackPatch=fullPathClass.substring(fullPathClass.lastIndexOf(prefex1)+prefex1.length()).replace("\\",".");
-//        Util.redlog("classPackPatch:"+classPackPatch);
 
         for(String pkg:pkgs){
             if(classPackPatch.startsWith(pkg)){
