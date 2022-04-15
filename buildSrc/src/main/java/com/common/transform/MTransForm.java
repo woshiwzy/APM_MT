@@ -1,6 +1,6 @@
 package com.common.transform;
 
-import static com.common.util.MTLog.redlog;
+import static com.common.util.MTLog.redLog;
 
 import com.android.build.api.transform.DirectoryInput;
 import com.android.build.api.transform.Format;
@@ -43,7 +43,9 @@ public class MTransForm extends Transform {
     @Override
     public void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         super.transform(transformInvocation);
-        redlog("MTransForm 正在运行");
+        redLog("MTransForm 正在运行");
+
+
 
         //当前是否是增量编译
         boolean isIncremental = transformInvocation.isIncremental();
@@ -64,7 +66,7 @@ public class MTransForm extends Transform {
             for (DirectoryInput directoryInput : input.getDirectoryInputs()) {
                 File dest = outputProvider.getContentLocation(directoryInput.getName(), directoryInput.getContentTypes(), directoryInput.getScopes(), Format.DIRECTORY);
                 ////如果需要在此处处理字节码，就可以实现编译期间干预字节码的目的了
-                MTLog.redlog("directoryInput===>:" + directoryInput.getFile() + " ===> " + dest);
+                MTLog.redLog("directoryInput===>:" + directoryInput.getFile() + " ===> " + dest);
                 processInjectDirFiles(directoryInput.getFile(), dest, directoryInput.getFile(), mtConfig);
             }
 
@@ -104,7 +106,7 @@ public class MTransForm extends Transform {
             }
             //判断该类是否需要插装
             boolean needPlug = mtConfig.needPlug(processingFile.getAbsolutePath());
-            MTLog.redlog("类文件路径:" + processingFile.getAbsolutePath() + " 文件是否存在：" + (processingFile.exists()) + " 是否需要插桩：" + needPlug);
+            MTLog.redLog("类文件路径:" + processingFile.getAbsolutePath() + " 文件是否存在：" + (processingFile.exists()) + " 是否需要插桩：" + needPlug);
             File outFile =getOutPutFile(processingFile, inputDir,dest);
             if (needPlug) {
                 FileInputStream fis = new FileInputStream(processingFile);

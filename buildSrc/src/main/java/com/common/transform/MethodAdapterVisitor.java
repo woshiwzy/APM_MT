@@ -45,7 +45,7 @@ class MethodAdapterVisitor extends AdviceAdapter {
 
     @Override
     protected void onMethodEnter() {
-        MTLog.redlog("方法进入:onMethodEnter " + methodName);
+        MTLog.redLog("方法进入:onMethodEnter " + methodName);
         //储备本地变量备用
         mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
         index = newLocal(Type.LONG_TYPE);
@@ -57,7 +57,7 @@ class MethodAdapterVisitor extends AdviceAdapter {
 
     @Override
     protected void onMethodExit(int opcode) {
-        MTLog.redlog("方法进入:onMethodExit " + methodName);
+        MTLog.redLog("方法进入:onMethodExit " + methodName);
         mv.visitVarInsn(LLOAD, start);
         String owner = this.mtConfig.mtCallBackPackage.replace(".", "/") + "/" + MTConfig.MTClassname;
         mv.visitMethodInsn(INVOKESTATIC, owner, MTConfig.MTMethod, "(J)V", false);

@@ -4,8 +4,6 @@ plugins {
 }
 
 MTConfig {
-
-    work=true //开关
     mtCallBackPackage="com.myapm.callback"
     pkgs = [
             "com.sand.apm.mt"
@@ -23,15 +21,13 @@ MTConfig {
 }
 
 android {
-    compileSdk 32
-
+    compileSdk 31
     defaultConfig {
         applicationId "com.sand.apm.mt"
         minSdk 21
-        targetSdk 32
+        targetSdk 31
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -46,6 +42,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
+
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'

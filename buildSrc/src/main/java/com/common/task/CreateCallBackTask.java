@@ -2,7 +2,6 @@ package com.common.task;
 
 import com.common.plug.MTConfig;
 import com.common.util.MTLog;
-import com.common.util.PathUtils;
 
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
@@ -22,7 +21,6 @@ public class CreateCallBackTask extends DefaultTask {
     @Input
     private MTConfig mtConfig;
 
-
     @TaskAction
     void doTask() {
 
@@ -32,7 +30,7 @@ public class CreateCallBackTask extends DefaultTask {
             String callStaticMethod = MTConfig.MTMethod;//注入的方法
 
             String fileChildPath = "src/main/java/" + mtPackage.replace(".", "/");
-            MTLog.redlog("自动生成的类路径----->>" + fileChildPath);
+            MTLog.yellowLog("自动生成的类路径----->>" + fileChildPath);
 
             String javaFilePath = fileChildPath + "/MTCallBack.java";
             File file = new File(getProject().getProjectDir(), javaFilePath);
@@ -46,7 +44,7 @@ public class CreateCallBackTask extends DefaultTask {
 
 //            String projectPath = PathUtils.getCurrentProjectPath();
 
-            MTLog.redlog("生成代码类运行结束----->>" + file.getAbsolutePath());
+            MTLog.redLog("生成代码类运行结束----->>" + file.getAbsolutePath());
 
             String javaClass =
                     "package " + mtConfig.mtCallBackPackage + ";\n" +
@@ -76,17 +74,14 @@ public class CreateCallBackTask extends DefaultTask {
                     "}";
 
 
-            MTLog.redlog("最终将注入：" + javaFilePath + " 的done方法");
-
+            MTLog.redLog("最终将注入：" + javaFilePath + " 的"+MTConfig.MTMethod+"方法");
             FileUtils.writeByteArrayToFile(file, javaClass.getBytes());
-
-
         } catch (IOException e) {
             e.printStackTrace();
-            MTLog.redlog("生成代码出现问题");
+            MTLog.redLog("生成代码出现问题");
         }
 
-        MTLog.redlog("生成代码类运行结束-----");
+        MTLog.greenLog("生成代码类运行结束-----");
 
 //        //生成java类
 //        TypeSpec.Builder builder = TypeSpec.classBuilder("TestJava")

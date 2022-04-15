@@ -1,15 +1,19 @@
-com/common/transform/ClassInjectTimeVisitor.java
- com.common.transform.ClassInjectTimeVisitor
+com/common/plug/MTConfig.java
+ com.common.plug.MTConfig
 com/common/util/PathUtils.java
  com.common.util.PathUtils
+com/common/util/ColorLog.java
+ com.common.util.ColorLog
+com/common/util/PropTool.java
+ com.common.util.PropTool
+com/common/transform/ClassInjectTimeVisitor.java
+ com.common.transform.ClassInjectTimeVisitor
 com/common/transform/MethodAdapterVisitor.java
  com.common.transform.MethodAdapterVisitor
 com/common/util/MTLog.java
  com.common.util.MTLog
 com/common/transform/MTransForm.java
  com.common.transform.MTransForm
-com/common/plug/MTConfig.java
- com.common.plug.MTConfig
 com/common/task/CreateCallBackTask.java
  com.common.task.CreateCallBackTask
 com/common/plug/MTPlug.java

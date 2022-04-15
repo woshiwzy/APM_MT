@@ -1,26 +1,34 @@
 plugins {
-    id 'java'
     id 'java-gradle-plugin'
     id 'java-library'
+//    id 'maven'
+//    id 'maven-publish' //该插件可以将打包的jar发送到maven库
+
 }
 
-repositories {
-    maven { url 'https://dl.google.com/dl/android/maven2/' }
-    mavenCentral()
-    google()
-    jcenter()
-    maven { url 'https://www.jitpack.io' }
-}
 
+//buildscript {
+//    repositories {
+//        maven { url 'http://jcenter.bintray.com' }
+//    }
+//
+//    dependencies {
+//        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6'
+//    }
+//}
+
+//group 'com.sand.group.mt'
+//version '1.0.0'
 
 dependencies {
     implementation gradleApi()
-
+    implementation 'com.android.tools.build:gradle-api:7.0.3'
     implementation 'com.android.tools.build:gradle:7.0.3'
     implementation files('libs/commons-io-2.6.jar')//不要用自带的io工具，有冲突
     implementation files('libs/asm-9.2.jar')//不要用自带的asm api，有冲突
     implementation files('libs/asm-commons-9.2.jar')
     implementation files('libs/asm-util-9.2.jar')
+
     // retrofit
 //    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
 //    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
@@ -28,5 +36,56 @@ dependencies {
 
 }
 
-group 'com.sand.gradle'
-version '1.0.0'
+repositories {
+    mavenCentral()
+    google()
+    maven { url 'https://dl.google.com/dl/android/maven2/' }
+    jcenter()
+    maven { url 'https://www.jitpack.io' }
+    maven { url 'https://jcenter.bintray.com' }
+}
+////发布到maven
+//apply plugin: 'maven-publish'
+//
+//publishing{
+//    publications{
+//        plugin(MavenPublication){
+//            from components.java
+//            group 'com.sand.group.mt'
+//            artifactId 'mt'
+//            version '1.0.0'
+//        }
+//    }
+//}
+
+
+//
+//publishing {
+//    repositories {
+//        maven {
+//            credentials {
+//                username 'sand' // 仓库发布用户名
+//                password 'sand1234567' // 仓库发布用户密码
+//            }
+//            url 'trunk_url' // 仓库地址
+//        }
+//    }
+//    publications {
+//
+//        plugin(MavenPublication){
+//            from components.java
+//            group 'com.sand.group.mt'
+//            artifactId 'mt'
+//            version '1.0.0'
+//        }
+//
+////        maven(MavenPublication) {
+////            groupId 'com.sand.group.mt' // groupId
+////            artifactId 'mt' // artifactId
+////            version '1.0.0' // 发布版本
+////            description 'This is mt plug' // 说明描述
+////        }
+//    }
+//}
+//
+//

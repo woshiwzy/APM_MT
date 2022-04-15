@@ -6,11 +6,32 @@ import java.security.MessageDigest;
 public class MTLog {
 
 
-    public static void redlog(String content) {
-        System.err.println(content);
-    }
     public static void log(String content) {
-        System.out.println(content);
+        System.out.println("MT:" + content);
+    }
+
+    public static void redLog(String content) {
+        System.err.println(ColorLog.red("MT:" + content));
+    }
+
+    public static void purpLog(String content) {
+        System.out.println(ColorLog.purple("MT:" + content));
+    }
+
+    public static void yellowLog(String content) {
+        System.out.println(ColorLog.yellow("MT:" + content));
+    }
+
+    public static void orangeLog(String content) {
+        System.out.println(ColorLog.orange("MT:" + content));
+    }
+
+    public static void blueLog(String content) {
+        System.out.println(ColorLog.blue("MT:" + content));
+    }
+
+    public static void greenLog(String content) {
+        System.out.println(ColorLog.green("MT:" + content));
     }
 
 
