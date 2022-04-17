@@ -1,7 +1,6 @@
 plugins {
     id 'java-gradle-plugin'
     id 'java-library'
-    id 'maven-publish' //该插件可以将打包的jar发送到maven库
 }
 
 dependencies {
@@ -30,70 +29,3 @@ repositories {
 }
 
 
-//插件定义
-gradlePlugin {
-    plugins {
-        //定义的信息不一定和发布信息相同
-        MethodTracer {
-            id = 'com.sand.mt'                                //定义插件id
-            version ='1.0.1'
-            implementationClass = 'com.sand.mt.src.plug.MTPlug'  //定义插件实现类
-        }
-    }
-}
-
-
-////本地发布
-//publishing {
-//
-//    // 定义发布什么
-//    publications {
-//        plugin(MavenPublication) {
-//            from components.java //使用默认的配置生成jar包
-//            groupId = 'com.sand.group'     //这三部分组成了：com.example:plugin:1.0.0-SNAPSHOT
-//            artifactId = 'mt'
-//            version = '1.0.0'
-//        }
-//    }
-//    // 定义发布到哪
-//    // publishPluginPublicationToRepoRepository 发布到 plugin/build/repo
-//    // publishPluginPublicationToMavenLocal 发布到 ~/.m2/repository
-//    repositories {
-//        maven {
-//            name = 'repo'
-//            url = layout.buildDirectory.dir("repo")
-//        }
-//    }
-//}
-
-
-//远程发布，实际来自自定义的仓库
-//publishing {
-//    publications {
-//        maven(MavenPublication) {
-////            from components.java
-//            groupId = "com.sand.group"
-//            artifactId = "mt"
-//            version = "1.0.1"
-//            description "MTPlug is a good apm tool"
-//            from components.java
-////            afterEvaluate {
-////                from components.release
-////            }
-//        }
-//    }
-//
-//    repositories {
-//        maven {
-//            allowInsecureProtocol true
-//            url = 'http://161.117.195.45:6677/repository/maven-releases/'
-//            credentials {
-//                it.username = "admin"
-//                it.password = "admin123"
-//            }
-//        }
-//    }
-//}
-//
-//println("----------------------------")
-//
