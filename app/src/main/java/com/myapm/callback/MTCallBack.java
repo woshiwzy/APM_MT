@@ -1,6 +1,8 @@
 package com.myapm.callback;
 import android.util.Log;
 
+import com.apm.tools.MTHelper;
+
 
 /*
 *这个类是MT插件自动生成的，done方法将被注入到方法类中
@@ -31,6 +33,8 @@ public class MTCallBack{
    System.out.println(mtLog);
 
    Log.d("mt", mtLog);
+
+
 
    }
 
