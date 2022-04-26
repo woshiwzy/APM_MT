@@ -46,5 +46,10 @@
       <option name="name" value="maven" />
       <option name="url" value="file:/$PROJECT_DIR$/app/localMaven" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven3" />
+      <option name="name" value="maven3" />
+      <option name="url" value="http://161.117.195.45:6677/repository/sand_repo_release/" />
+    </remote-repository>
   </component>
 </project>

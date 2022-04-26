@@ -4,35 +4,55 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Debug;
 import android.text.format.Formatter;
-import android.util.Log;
+
+import com.commontech.basemodule.utils.FileSizer;
 
 
 /**
  * @ProjectName: APM_MT
  * @Date: 2022/4/11
  * @Desc: 工具类
+ * <p>
+ *  https://www.jianshu.com/p/8a0a039397a8
+ *  先说结论：一般情况下有：VSS >= RSS >= PSS >= USS。
+ * 1.VSS - Virtual Set Size 虚拟耗用内存（包含共享库占用的内存）
+ * 2.RSS - Resident Set Size 常驻内存/实际使用物理内存（包含共享库占用的内存）
+ * 3.PSS - Proportional Set Size 实际使用的物理内存（比例分配共享库占用的内存）
+ * 4.USS - Unique Set Size 进程独自占用的物理内存（不包含共享库占用的内存）
  */
 public class MTHelper {
 
-    public static String tag="mt";
+    public static String tag = "mt";
 
-    public static String formatData(Context context,long fileData){
-        return Formatter.formatFileSize(context,fileData);
+    public static String formatData(Context context, long fileData) {
+        return Formatter.formatFileSize(context, fileData);
     }
 
-    public static String memInfoByAM(Context context){
 
-        ActivityManager am= (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        ActivityManager.MemoryInfo memoryInfo=new ActivityManager.MemoryInfo();
+    /**
+     * 从Activity Manager 中获取内存信息
+     *
+     * @param context
+     * @return
+     */
+    public static String memInfoByAM(Context context) {
+
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
         am.getMemoryInfo(memoryInfo);
-        String totalMem="Sys ava total mem:"+formatData(context,memoryInfo.totalMem)+"\n";
-        String currentLefetMem="Sys left mem:"+formatData(context,memoryInfo.availMem)+"\n";
-        String isLowMem="Is Low mem status:"+memoryInfo.lowMemory+"\n";
-        String threshold="Mem threshold:"+memoryInfo.threshold+"\n";
-        return totalMem+currentLefetMem+isLowMem+threshold;
+        String totalMem = "Sys ava total mem:" + formatData(context, memoryInfo.totalMem) + "\n";
+        String currentLefetMem = "Sys left mem:" + formatData(context, memoryInfo.availMem) + "\n";
+        String isLowMem = "Is Low mem status:" + memoryInfo.lowMemory + "\n";
+        String threshold = "Mem threshold:" + memoryInfo.threshold + "\n";
+        return totalMem + currentLefetMem + isLowMem + threshold;
     }
 
-    public static String memInfoByDebug(){
+    /**
+     * 从Debug类中获取类信息，最有用的是Native堆占用信息
+     *
+     * @return
+     */
+    public static MemInfo memInfoByDebug() {
 //        Debug的getMemoryInfo(Debug.MemoryInfo memoryInfo)或ActivityManager的MemoryInfo[] getProcessMemoryInfo(int[] pids)。比较详细.数据的单位是KＢ.
 //                MemoryInfo的Field如下
 //        dalvikPrivateDirty： The private dirty pages used by dalvik。
@@ -70,32 +90,80 @@ public class MTHelper {
         //https://www.jianshu.com/p/a283409c3d1c
 
 
-        Debug.MemoryInfo osMemoryInfo=new Debug.MemoryInfo();
+        Debug.MemoryInfo osMemoryInfo = new Debug.MemoryInfo();
         Debug.getMemoryInfo(osMemoryInfo);
 
         int dalvikPrivateDirty = osMemoryInfo.dalvikPrivateDirty;
         int dalvikPss = osMemoryInfo.dalvikPss;
         int dalvikSharedDirty = osMemoryInfo.dalvikSharedDirty;
 
+//        //返回的是当前进程navtive堆中已使用的内存大小
+//        Log.i(tag,"NativeHeapSizeTotal:"+(Debug.getNativeHeapSize()>>10)); //>>10转化为KB
+//        //返回的是当前进程navtive堆中已经剩余的内存大小
+//        Log.i(tag,"NativeAllocatedHeapSize:"+(Debug.getNativeHeapAllocatedSize()>>10));
+////        返回的是当前进程navtive堆本身总的内存大小
+//        Log.i(tag,"NativeAllocatedFree:"+(Debug.getNativeHeapFreeSize()>>10));
 
-        //返回的是当前进程navtive堆中已使用的内存大小
-        Log.i(tag,"NativeHeapSizeTotal:"+(Debug.getNativeHeapSize()>>10)); //>>10转化为KB
-        //返回的是当前进程navtive堆中已经剩余的内存大小
-        Log.i(tag,"NativeAllocatedHeapSize:"+(Debug.getNativeHeapAllocatedSize()>>10));
-//        返回的是当前进程navtive堆本身总的内存大小
-        Log.i(tag,"NativeAllocatedFree:"+(Debug.getNativeHeapFreeSize()>>10));
+        String debugMemInfo = "Native堆内存大小:" + FileSizer.formatFile(Debug.getNativeHeapSize()) + " Native堆内存已占用:" + FileSizer.formatFile(Debug.getNativeHeapAllocatedSize()) + " Navtive堆内存剩余:" + FileSizer.formatFile(Debug.getNativeHeapFreeSize());
 
-        return "";
-        
+        return new MemInfo(debugMemInfo, Debug.getNativeHeapAllocatedSize());
     }
 
 
-    public static String memInfoByRunTime(){
+    /**
+     * 建议用这个方法获取内存信息和profiler看到的内存信息一致
+     *
+     * @return
+     */
+    public static MemInfo memInfoByRunTime() {
+
         long maxMem = Runtime.getRuntime().maxMemory();//app可用的最大内存
-        long used=Runtime.getRuntime().totalMemory();//app已占用的内存
-        long alocateNotUse=Runtime.getRuntime().freeMemory();//app已经占用，但实际并未使用的内存
-        long totalUsed=used-alocateNotUse;//获取已经分配的内存
-        return "";
+        long used = Runtime.getRuntime().totalMemory();//app已占用的内存
+        long alocateNotUse = Runtime.getRuntime().freeMemory();//app已经占用，但实际并未使用的内存
+        long totalUsed = used - alocateNotUse;//获取已经分配的内存
+
+        String memInfo = "App可用最大内存:" + FileSizer.formatFile(maxMem) + " App 已经占用内存:" + FileSizer.formatFile(used) + " 占用但未用:" + FileSizer.formatFile(alocateNotUse) + " 正在使用:" + FileSizer.formatFile(totalUsed);
+
+        return new MemInfo(memInfo, totalUsed);
+    }
+
+    public static int getAppUseMemByKB() {
+
+        //PSS:PSS - Proportional Set Size 实际使用的物理内存
+
+        Debug.MemoryInfo memoryInfo = new Debug.MemoryInfo();
+
+        Debug.getMemoryInfo(memoryInfo);
+
+
+// dalvikPrivateClean + nativePrivateClean + otherPrivateClean;
+
+        int totalPrivateClean = memoryInfo.getTotalPrivateClean();
+
+// dalvikPrivateDirty + nativePrivateDirty + otherPrivateDirty;
+
+        int totalPrivateDirty = memoryInfo.getTotalPrivateDirty();
+
+// dalvikPss + nativePss + otherPss;
+
+        int totalPss = memoryInfo.getTotalPss();
+
+// dalvikSharedClean + nativeSharedClean + otherSharedClean;
+
+        int totalSharedClean = memoryInfo.getTotalSharedClean();
+
+// dalvikSharedDirty + nativeSharedDirty + otherSharedDirty;
+
+        int totalSharedDirty = memoryInfo.getTotalSharedDirty();
+
+// dalvikSwappablePss + nativeSwappablePss + otherSwappablePss;
+
+        int totalSwappablePss = memoryInfo.getTotalSwappablePss();
+
+        int total = totalPrivateClean + totalPrivateDirty + totalPss + totalSharedClean + totalSharedDirty + totalSwappablePss;
+
+        return total;
+
     }
 
 

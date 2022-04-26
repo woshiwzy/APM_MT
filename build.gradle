@@ -19,15 +19,20 @@ buildscript {
     }
 }
 
-allprojects{
+allprojects {
 
-    repositories{
+    repositories {
         jcenter()
         google()
         mavenLocal()
         mavenCentral()
         maven { url 'https://dl.google.com/dl/android/maven2/' }
         maven { url 'https://www.jitpack.io' }
+
+        maven {
+            allowInsecureProtocol = true
+            url 'http://161.117.195.45:6677/repository/sand_repo_release/'
+        }
     }
 
 }

@@ -1,9 +1,13 @@
 package com.sand.apm.mt;
 
 import android.app.Application;
+import android.content.ComponentCallbacks;
+import android.content.res.Configuration;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.commontech.basemodule.utils.KLog;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.DiskLogStrategy;
 import com.orhanobut.logger.FormatStrategy;
@@ -39,5 +43,20 @@ public class App extends Application {
                 return BuildConfig.DEBUG;
             }
         });
+
+        registerComponentCallbacks(new ComponentCallbacks() {
+            @Override
+            public void onConfigurationChanged(@NonNull Configuration newConfig) {
+
+            }
+
+            @Override
+            public void onLowMemory() {
+
+            }
+        });
+
+        KLog.init(true);
+
     }
 }
