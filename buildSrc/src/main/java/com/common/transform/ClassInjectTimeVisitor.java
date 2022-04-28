@@ -23,7 +23,7 @@ class ClassInjectTimeVisitor extends ClassVisitor {
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
-        if (mtConfig.excludeMethods.contains(name) || MTConfig.MTMethod.equals(name)) {
+        if (mtConfig.excludeMethods.contains(name) || MTConfig.MTMethodDone.equals(name)) {
             return mv;
         } else {
             return new MethodAdapterVisitor(mv, access, name, desc, className, mtConfig);

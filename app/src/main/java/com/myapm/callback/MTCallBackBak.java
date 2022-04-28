@@ -17,7 +17,7 @@ import com.sand.apm.mt.App;
  *注意:如果你删除这个类，将会自动创建
  */
 
-public class MTCallBack {
+public class MTCallBackBak {
 
     public static void mtDone(long start) {
 
@@ -38,11 +38,11 @@ public class MTCallBack {
         KLog.d(App.tag, mtLog);
 
 
-        MemInfo runTimeMemInfo = MTHelper.memInfoByRunTime();
+        MemInfo runTimeMemInfo = MTHelper.getJavaHeap();
 //        KLog.d(App.tag, runTimeMemInfo.stringInfo);
-        MemInfo debugMemInfo = MTHelper.memInfoByDebug();
+        MemInfo debugMemInfo = MTHelper.getNativeHeap();
 
-        KLog.d(App.tag, "Java 堆内存:" + FileSizer.formatFile(runTimeMemInfo.usedMem) + ",Native 堆内存:" + FileSizer.formatFile(debugMemInfo.usedMem) + ",APP内存占用合计(总Java堆+总Native堆):" + FileSizer.formatFile(MTHelper.getAppUseMemByKB() * 1024));
+        KLog.d(App.tag, "Java 堆内存:" + FileSizer.formatFile(runTimeMemInfo.usedMem) + ",Native 堆内存:" + FileSizer.formatFile(debugMemInfo.usedMem) + ",APP内存占用合计(总Java堆+总Native堆):" + FileSizer.formatFile(MTHelper.getAppUseMem() ));
 
 //        KLog.d(App.tag,"totalMem:"+ FileSizer.formatFile(MTHelper.getMemory()));
 //        KLog.d(App.tag,"Debug mem:"+MTHelper.memInfoByDebug().stringInfo);

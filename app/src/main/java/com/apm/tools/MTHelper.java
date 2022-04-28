@@ -24,6 +24,13 @@ public class MTHelper {
 
     public static String tag = "mt";
 
+
+    public static String getCurrentMethodName(StackTraceElement[] sts){
+        String currentMethodName = sts[3].getClassName() + "." + sts[3].getMethodName();
+        return currentMethodName;
+    }
+
+
     public static String formatData(Context context, long fileData) {
         return Formatter.formatFileSize(context, fileData);
     }
@@ -52,7 +59,7 @@ public class MTHelper {
      *
      * @return
      */
-    public static MemInfo memInfoByDebug() {
+    public static MemInfo getNativeHeap() {
 //        Debug的getMemoryInfo(Debug.MemoryInfo memoryInfo)或ActivityManager的MemoryInfo[] getProcessMemoryInfo(int[] pids)。比较详细.数据的单位是KＢ.
 //                MemoryInfo的Field如下
 //        dalvikPrivateDirty： The private dirty pages used by dalvik。
@@ -105,17 +112,21 @@ public class MTHelper {
 //        Log.i(tag,"NativeAllocatedFree:"+(Debug.getNativeHeapFreeSize()>>10));
 
         String debugMemInfo = "Native堆内存大小:" + FileSizer.formatFile(Debug.getNativeHeapSize()) + " Native堆内存已占用:" + FileSizer.formatFile(Debug.getNativeHeapAllocatedSize()) + " Navtive堆内存剩余:" + FileSizer.formatFile(Debug.getNativeHeapFreeSize());
-
         return new MemInfo(debugMemInfo, Debug.getNativeHeapAllocatedSize());
     }
 
+
+    public static Long getNativeHeap2() {
+
+        return Debug.getNativeHeapAllocatedSize();
+    }
 
     /**
      * 建议用这个方法获取内存信息和profiler看到的内存信息一致
      *
      * @return
      */
-    public static MemInfo memInfoByRunTime() {
+    public static MemInfo getJavaHeap() {
 
         long maxMem = Runtime.getRuntime().maxMemory();//app可用的最大内存
         long used = Runtime.getRuntime().totalMemory();//app已占用的内存
@@ -127,7 +138,20 @@ public class MTHelper {
         return new MemInfo(memInfo, totalUsed);
     }
 
-    public static int getAppUseMemByKB() {
+
+    public static long getJavaHeap2() {
+
+        long maxMem = Runtime.getRuntime().maxMemory();//app可用的最大内存
+        long used = Runtime.getRuntime().totalMemory();//app已占用的内存
+        long alocateNotUse = Runtime.getRuntime().freeMemory();//app已经占用，但实际并未使用的内存
+        long totalUsed = used - alocateNotUse;//获取已经分配的内存
+
+//        String memInfo = "App可用最大内存:" + FileSizer.formatFile(maxMem) + " App 已经占用内存:" + FileSizer.formatFile(used) + " 占用但未用:" + FileSizer.formatFile(alocateNotUse) + " 正在使用:" + FileSizer.formatFile(totalUsed);
+//        return new MemInfo("", totalUsed);
+        return  totalUsed;
+    }
+
+    public static int getAppUseMem() {
 
         //PSS:PSS - Proportional Set Size 实际使用的物理内存
 
@@ -162,7 +186,7 @@ public class MTHelper {
 
         int total = totalPrivateClean + totalPrivateDirty + totalPss + totalSharedClean + totalSharedDirty + totalSwappablePss;
 
-        return total;
+        return total*1024;//默认以KB计算，*1024以MB计算
 
     }
 

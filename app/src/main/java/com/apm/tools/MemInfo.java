@@ -3,7 +3,7 @@ package com.apm.tools;
 /**
  * @ProjectName: APM_MT
  * @Date: 2022/4/26
- * @Desc:
+ * @Desc: memInfo
  */
 public class MemInfo {
 

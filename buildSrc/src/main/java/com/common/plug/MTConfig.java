@@ -9,7 +9,8 @@ public class MTConfig {
 
     public static final String MTClassname="MTCallBack";
 
-    public static final String MTMethod="mtDone";
+    public static final String MTMethodStart="mtStart";
+    public static final String MTMethodDone ="mtDone";
 
     public Set<String> pkgs;//以这个包名开始的话，会被插桩
     public Set<String> excludeMethods;//这个集合里面的方法不插桩

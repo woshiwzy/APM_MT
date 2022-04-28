@@ -28,7 +28,9 @@ public class CreateCallBackTask extends DefaultTask {
         try {
 
             String mtPackage = mtConfig.mtCallBackPackage;//自动生成的包
-            String callStaticMethod = MTConfig.MTMethod;//注入的方法
+
+            String callStaticMethodStart=MTConfig.MTMethodStart;
+            String callStaticMethodDone = MTConfig.MTMethodDone;//注入的方法
 
             String fileChildPath = "src/main/java/" + mtPackage.replace(".", "/");
             MTLog.yellowLog("------------------------------------------");
@@ -61,7 +63,13 @@ public class CreateCallBackTask extends DefaultTask {
                     "\n*/\n\n" +
                     "public class MTCallBack{" +
                     "\n\n" +
-                    "   public static void " + callStaticMethod + "(long start){" +
+                      "   public static void "+callStaticMethodStart+"(long start){" +
+
+
+                            "\n\n" +
+                            "   }"+
+                            "\n\n" +
+                    "   public static void " + callStaticMethodDone + "(long start){" +
 
                     "\n\n" +
                     "   long end =  System.currentTimeMillis();\n\n"+
@@ -76,7 +84,7 @@ public class CreateCallBackTask extends DefaultTask {
                     "\n\n" +
                     "}";
 
-            MTLog.redLog("最终将注入：" + javaFilePath + " 的"+MTConfig.MTMethod+"方法");
+            MTLog.redLog("最终将注入：" + javaFilePath + " 的"+MTConfig.MTMethodDone +"方法");
             FileUtils.writeByteArrayToFile(file, javaClass.getBytes());
         } catch (IOException e) {
             e.printStackTrace();

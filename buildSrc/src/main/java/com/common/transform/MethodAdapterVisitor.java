@@ -1,7 +1,6 @@
 package com.common.transform;
 
 import com.common.plug.MTConfig;
-import com.common.util.MTLog;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Label;
@@ -51,6 +50,11 @@ class MethodAdapterVisitor extends AdviceAdapter {
         start = index;
         mv.visitVarInsn(LSTORE, start);
 
+        //插入start方法调用
+        mv.visitVarInsn(LLOAD, start);
+        String owner = this.mtConfig.mtCallBackPackage.replace(".", "/") + "/" + MTConfig.MTClassname;
+        mv.visitMethodInsn(INVOKESTATIC, owner, MTConfig.MTMethodStart, "(J)V", false);
+
     }
 
 
@@ -58,7 +62,7 @@ class MethodAdapterVisitor extends AdviceAdapter {
     protected void onMethodExit(int opcode) {
         mv.visitVarInsn(LLOAD, start);
         String owner = this.mtConfig.mtCallBackPackage.replace(".", "/") + "/" + MTConfig.MTClassname;
-        mv.visitMethodInsn(INVOKESTATIC, owner, MTConfig.MTMethod, "(J)V", false);
+        mv.visitMethodInsn(INVOKESTATIC, owner, MTConfig.MTMethodDone, "(J)V", false);
 
     }
 }
