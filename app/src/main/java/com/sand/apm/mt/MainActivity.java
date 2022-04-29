@@ -3,6 +3,7 @@ package com.sand.apm.mt;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -76,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
                 testDelay();
             }
         });
+
+
 
     }
 

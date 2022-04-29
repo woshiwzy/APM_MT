@@ -9,5 +9,28 @@ import java.util.HashMap;
  */
 public class Statistics {
 
+    public static HashMap<String, Action> statisMap = new HashMap<>();
+
+    public static void start(String key, Action action) {
+        statisMap.put(key, action);
+    }
+
+
+    public static void close(String key) {
+        Action action = statisMap.get(key);
+        if (null != action) {
+            action.close();
+
+        } else {
+            //error
+
+        }
+
+    }
+
+    public static void dumps(){
+
+
+    }
 
 }

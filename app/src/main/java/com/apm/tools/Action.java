@@ -42,10 +42,6 @@ public class Action {
     }
 
 
-
-
-
-
     @Deprecated
     public static Action create(int actionType,String methodName,long start){
 
@@ -84,8 +80,12 @@ public class Action {
         this.cost = cost;
     }
 
-    public String createKey(){
+    public String getKey(){
         return  methodName+"_"+start;
+    }
+
+    public static String createKey(String methodName,long start){
+        return methodName+"_"+start;
     }
 
     public MemStatics getStartMem() {

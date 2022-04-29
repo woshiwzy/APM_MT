@@ -141,7 +141,7 @@ public class MTHelper {
 
     public static long getJavaHeap2() {
 
-        long maxMem = Runtime.getRuntime().maxMemory();//app可用的最大内存
+//        long maxMem = Runtime.getRuntime().maxMemory();//app可用的最大内存
         long used = Runtime.getRuntime().totalMemory();//app已占用的内存
         long alocateNotUse = Runtime.getRuntime().freeMemory();//app已经占用，但实际并未使用的内存
         long totalUsed = used - alocateNotUse;//获取已经分配的内存
