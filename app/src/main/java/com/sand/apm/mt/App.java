@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.apm.tools.Statistics;
 import com.commontech.basemodule.utils.KLog;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.DiskLogStrategy;
@@ -29,6 +30,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         KLog.init(true);
+        Statistics.init(this);
 
         FormatStrategy formatStrategy = PrettyFormatStrategy.newBuilder()
                 .showThreadInfo(false)  // (Optional) Whether to show thread info or not. Default true

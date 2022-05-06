@@ -1,7 +1,5 @@
 package com.myapm.callback;
 
-import android.util.Log;
-
 import com.apm.tools.Action;
 import com.apm.tools.MTHelper;
 import com.apm.tools.Statistics;
@@ -25,23 +23,12 @@ public class MTCallBack {
         Action action=Action.createFromStart(currentMethodName,start);
         Statistics.start(action.getKey(),action);
 
-        Log.d("mt", "mtstart====>:" + currentMethodName);
-        System.out.println("mtstart====>" + currentMethodName);
-
     }
 
     public static void mtDone(long start) {
-        long end = System.currentTimeMillis();
-        long cost = end - start;
+
         String currentMethodName = MTHelper.getCurrentMethodName(Thread.currentThread().getStackTrace());
-        Log.d("mt", "mtEnd====>:" + currentMethodName + " 耗时: " + cost + " 毫秒");
-
-        Statistics.close(Action.createKey(currentMethodName,start));
-
-//        String mtLog = currentMethodName + " 耗时:" + cost + " ms,Thread.name:" + Thread.currentThread().getName();
-//        System.out.println(mtLog);
-//        Log.d("mt", "<======"+mtLog);
-
+        Statistics.finish(Action.createKey(currentMethodName,start));
 
 
     }

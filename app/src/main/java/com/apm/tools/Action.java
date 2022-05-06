@@ -1,5 +1,7 @@
 package com.apm.tools;
 
+import com.commontech.basemodule.utils.FileSizer;
+
 /**
  * @ProjectName: APM_MT
  * @Date: 2022/4/28
@@ -13,7 +15,6 @@ public class Action {
 
     private MemStatics startMem;//开始时内存情况
     private MemStatics endMem;//结束时内存情况
-
 
     /**
      * call on method start
@@ -103,6 +104,32 @@ public class Action {
     public void setEndMem(MemStatics endMem) {
         this.endMem = endMem;
     }
+
+
+    private String getStartMemLabel(){
+        String ret=FileSizer.formatFile(startMem.javaHeap)+","+FileSizer.formatFile(startMem.nativeheap);
+        return ret;
+    }
+
+    private String getEndMemLabel(){
+        if(null==endMem){
+            return "";
+        }
+        String ret=FileSizer.formatFile(endMem.javaHeap)+","+FileSizer.formatFile(endMem.nativeheap);
+        return ret;
+    }
+
+    public String toLineString(){
+        String line=methodName+","+start+","+getStartMemLabel()+","+cost+","+getEndMemLabel();
+        return line;
+    }
+
+    public boolean isDone(){
+        return (0!=cost);
+    }
+
+
+
 
     @Override
     public String toString() {
