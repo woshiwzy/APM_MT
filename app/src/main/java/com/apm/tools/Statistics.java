@@ -35,7 +35,7 @@ public class Statistics {
     private static ConcurrentHashMap<String, Action> statisMap = new ConcurrentHashMap<>();
 
     private static ScheduledExecutorService extors = null;
-    public static Application app;
+    private static Application app;
 
     /**
      * 给日志工具赋值一个全局的Applicatoion 才能写文件到磁盘
@@ -46,7 +46,7 @@ public class Statistics {
         app = globalApp;
     }
 
-    public static void autoInit() {
+    public static Application autoInit() {
         if (null == app) {
             try {
 
@@ -75,6 +75,7 @@ public class Statistics {
 
         }
 
+        return app;
     }
 
 
@@ -89,9 +90,11 @@ public class Statistics {
     }
 
 
-    public static void start(String key, Action action) {
-        statisMap.put(key, action);
+    public static Action start(String currentMethodName,long start) {
+        Action action=Action.createFromStart(currentMethodName,start);
+        statisMap.put(action.getKey(), action);
         Log.d("mt", "mtstart====>:" + action.getMethodName());
+        return action;
     }
 
     /**
@@ -99,7 +102,7 @@ public class Statistics {
      *
      * @param key
      */
-    public static void finish(String key) {
+    public static Action finish(String key) {
         Action action = statisMap.get(key);
         if (null != action) {
             action.close();
@@ -107,6 +110,7 @@ public class Statistics {
         } else {
             //error
         }
+        return action;
     }
 
 
@@ -114,8 +118,7 @@ public class Statistics {
      * 打印log到文件
      */
     public static void dumps() {
-        autoInit();
-        if (null == app) {
+        if (null == autoInit()) {
             statisMap.clear();//不清除可能导致OOM
             KLog.e(App.tag, "*************没有调用Statistics.init进行初始化，日志系统无法工作********");
             return;
@@ -126,7 +129,7 @@ public class Statistics {
         File extDir = app.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
         String absLogPath = extDir.getAbsolutePath() + File.separator + MT_DIR + File.separator + logFileName;
 
-        KLog.d(App.tag, "log 输出目录:" + absLogPath);
+//        KLog.d(App.tag, "log 输出目录:" + absLogPath);
 
         int dumpsCount = 0;
         try {

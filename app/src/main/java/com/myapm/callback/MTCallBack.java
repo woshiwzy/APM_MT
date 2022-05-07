@@ -4,7 +4,6 @@ import com.apm.tools.Action;
 import com.apm.tools.MTHelper;
 import com.apm.tools.Statistics;
 
-
 /*
  *这个类是MT插件自动生成的，done方法将被注入到方法类中
 
@@ -18,19 +17,13 @@ import com.apm.tools.Statistics;
 public class MTCallBack {
 
     public static void mtStart(long start) {
-
         String currentMethodName = MTHelper.getCurrentMethodName(Thread.currentThread().getStackTrace());
-        Action action=Action.createFromStart(currentMethodName,start);
-        Statistics.start(action.getKey(),action);
-
+        Statistics.start(currentMethodName, start);
     }
 
     public static void mtDone(long start) {
-
         String currentMethodName = MTHelper.getCurrentMethodName(Thread.currentThread().getStackTrace());
-        Statistics.finish(Action.createKey(currentMethodName,start));
-
-
+        Statistics.finish(Action.createKey(currentMethodName, start));
     }
 
 }

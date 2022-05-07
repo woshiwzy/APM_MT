@@ -1,5 +1,7 @@
 package com.apm.tools;
 
+import android.app.Application;
+
 import com.commontech.basemodule.utils.FileSizer;
 
 /**
@@ -16,6 +18,10 @@ public class Action {
     private MemStatics startMem;//开始时内存情况
     private MemStatics endMem;//结束时内存情况
 
+    private static Application application;
+
+
+
     /**
      * call on method start
      * @param methodName
@@ -23,6 +29,10 @@ public class Action {
      * @return
      */
     public static Action createFromStart(String methodName,long start){
+        if(null==application){
+            application=Statistics.autoInit();
+        }
+
         Action action=new Action();
         action.setMethodName(methodName);
         action.setStart(start);
@@ -107,7 +117,7 @@ public class Action {
 
 
     private String getStartMemLabel(){
-        String ret=FileSizer.formatFile(startMem.javaHeap)+","+FileSizer.formatFile(startMem.nativeheap);
+        String ret=FileSizer.formatFile(startMem.javaHeap)+","+FileSizer.formatFile(startMem.nativeheap)+","+startMem.power;
         return ret;
     }
 
@@ -115,7 +125,7 @@ public class Action {
         if(null==endMem){
             return "";
         }
-        String ret=FileSizer.formatFile(endMem.javaHeap)+","+FileSizer.formatFile(endMem.nativeheap);
+        String ret=FileSizer.formatFile(endMem.javaHeap)+","+FileSizer.formatFile(endMem.nativeheap)+","+endMem.power;
         return ret;
     }
 
