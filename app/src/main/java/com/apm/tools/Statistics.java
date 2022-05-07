@@ -10,6 +10,7 @@ import com.sand.apm.mt.App;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -28,7 +29,9 @@ public class Statistics {
 
     public static SimpleDateFormat FMT = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
     public static String tag = "mt";
-    private static final String MT_PREFIX="mt_";
+    private static final String MT_PREFIX = "mt_";
+    private static final String MT_DIR = "mtfiles";
+
     private static ConcurrentHashMap<String, Action> statisMap = new ConcurrentHashMap<>();
 
     private static ScheduledExecutorService extors = null;
@@ -41,6 +44,37 @@ public class Statistics {
      */
     public static void init(Application globalApp) {
         app = globalApp;
+    }
+
+    public static void autoInit() {
+        if (null == app) {
+            try {
+
+                //从ActivityThread中获取Application实例
+                //https://juejin.cn/post/6887980244389593096
+
+                //1.调用ActivityThread#currentActivityThread方法获取ActivityThread实例
+                Class clazz = Class.forName("android.app.ActivityThread");
+                Method currentThreadMethod = clazz.getMethod("currentActivityThread");
+                currentThreadMethod.setAccessible(true);
+
+                //2.activityThread 调用ActivityThread#getApplication 方法获取Application实例
+                Method appMethod = clazz.getMethod("getApplication");
+                appMethod.setAccessible(true);
+
+                Object activityThread = currentThreadMethod.invoke(null);
+                Application application = (Application) appMethod.invoke(activityThread);
+
+                app = application;
+                KLog.d(App.tag, "反射获取Applicaion成功");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                KLog.d(App.tag, "获取Application失败");
+            }
+
+        }
+
     }
 
 
@@ -62,6 +96,7 @@ public class Statistics {
 
     /**
      * 闭合事件
+     *
      * @param key
      */
     public static void finish(String key) {
@@ -79,7 +114,7 @@ public class Statistics {
      * 打印log到文件
      */
     public static void dumps() {
-
+        autoInit();
         if (null == app) {
             statisMap.clear();//不清除可能导致OOM
             KLog.e(App.tag, "*************没有调用Statistics.init进行初始化，日志系统无法工作********");
@@ -89,20 +124,21 @@ public class Statistics {
         Set<Map.Entry<String, Action>> sets = statisMap.entrySet();
         String logFileName = MT_PREFIX + FMT.format(new Date()) + ".txt";
         File extDir = app.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
-        String absLogPath = extDir.getAbsolutePath() + File.separator + logFileName;
+        String absLogPath = extDir.getAbsolutePath() + File.separator + MT_DIR + File.separator + logFileName;
 
         KLog.d(App.tag, "log 输出目录:" + absLogPath);
 
         int dumpsCount = 0;
         try {
             File outFile = new File(absLogPath);
-            if (outFile.exists()) {
-                outFile.delete();
+            File parentFile = outFile.getParentFile();
+            if (!parentFile.exists()) {
+                parentFile.mkdirs();
             }
 
             BufferedWriter bw = null;
-
             for (Map.Entry<String, Action> entry : sets) {
+
                 if (!outFile.exists()) {
                     outFile.createNewFile();
                     bw = new BufferedWriter(new FileWriter(outFile));
@@ -115,6 +151,7 @@ public class Statistics {
                 }
                 bw.write(logLine + "\n");
                 dumpsCount++;
+
             }
 
             if (null != bw) {

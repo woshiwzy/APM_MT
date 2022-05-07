@@ -30,7 +30,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         KLog.init(true);
-        Statistics.init(this);
+//        Statistics.init(this);
 
         FormatStrategy formatStrategy = PrettyFormatStrategy.newBuilder()
                 .showThreadInfo(false)  // (Optional) Whether to show thread info or not. Default true
@@ -58,8 +58,6 @@ public class App extends Application {
 
             }
         });
-
-
 
     }
 }
