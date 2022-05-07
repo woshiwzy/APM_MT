@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.apm.tools.PowerHelper;
 import com.commontech.basemodule.utils.KLog;
 
 import java.util.ArrayList;
@@ -74,10 +75,10 @@ public class MainActivity extends AppCompatActivity {
         buttonTest2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                KLog.d(App.tag,"电量:"+ PowerHelper.getBatter(getApplication()));
                 testDelay();
             }
         });
-
 
 
     }
