@@ -9,3 +9,4 @@
 rootProject.name = "APM_MT"
 include ':app'
 //include ':mtplug'
+include ':mtlib'

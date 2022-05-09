@@ -9,8 +9,8 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.apm.tools.KLog;
 import com.apm.tools.PowerHelper;
-import com.commontech.basemodule.utils.KLog;
 
 import java.util.ArrayList;
 

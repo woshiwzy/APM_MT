@@ -1,11 +1,9 @@
-package com.apm.tools;
+package com.sand.apm.mtlib;
 
 import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Debug;
 import android.text.format.Formatter;
-
-import com.commontech.basemodule.utils.FileSizer;
 
 
 /**

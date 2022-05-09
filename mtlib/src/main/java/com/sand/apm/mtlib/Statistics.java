@@ -1,11 +1,9 @@
-package com.apm.tools;
+package com.sand.apm.mtlib;
 
 import android.app.Application;
 import android.os.Environment;
 import android.util.Log;
 
-import com.commontech.basemodule.utils.KLog;
-import com.sand.apm.mt.App;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -66,11 +64,11 @@ public class Statistics {
                 Application application = (Application) appMethod.invoke(activityThread);
 
                 app = application;
-                KLog.d(App.tag, "反射获取Applicaion成功");
+                KLog.d(tag, "反射获取Applicaion成功");
 
             } catch (Exception e) {
                 e.printStackTrace();
-                KLog.d(App.tag, "获取Application失败");
+                KLog.d(tag, "获取Application失败");
             }
 
         }
@@ -122,7 +120,7 @@ public class Statistics {
     public static void dumps() {
         if (null == autoInit()) {
             statisMap.clear();//不清除可能导致OOM
-            KLog.e(App.tag, "*************没有调用Statistics.init进行初始化，日志系统无法工作********");
+            KLog.e(tag, "*************没有调用Statistics.init进行初始化，日志系统无法工作********");
             return;
         }
 
@@ -163,10 +161,10 @@ public class Statistics {
                 bw.flush();
                 bw.close();
             }
-            KLog.i(App.tag, " 本次 dumps:" + dumpsCount + " 条");
+            KLog.i(tag, " 本次 dumps:" + dumpsCount + " 条");
         } catch (Exception e) {
             e.printStackTrace();
-            KLog.e(App.tag, " 写log异常:" + e.getLocalizedMessage());
+            KLog.e(tag, " 写log异常:" + e.getLocalizedMessage());
         } finally {
 
         }

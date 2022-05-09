@@ -1,4 +1,4 @@
-package com.apm.tools;
+package com.sand.apm.mtlib;
 
 /**
  * @ProjectName: APM_MT
@@ -16,6 +16,6 @@ public class MemStatics {
         this.javaHeap = javaHeap;
         this.nativeheap = nativeheap;
         this.totalAllocate = totalAllocate;
-        this.power=PowerHelper.getBatter(Statistics.autoInit());
+        this.power= PowerHelper.getBatter(Statistics.autoInit());
     }
 }

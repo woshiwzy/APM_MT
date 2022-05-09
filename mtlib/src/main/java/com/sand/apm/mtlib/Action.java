@@ -1,8 +1,7 @@
-package com.apm.tools;
+package com.sand.apm.mtlib;
 
 import android.app.Application;
 
-import com.commontech.basemodule.utils.FileSizer;
 
 /**
  * @ProjectName: APM_MT
@@ -32,7 +31,7 @@ public class Action {
      */
     public static Action createFromStart(String methodName,long start ){
         if(null==application){
-            application=Statistics.autoInit();
+            application= Statistics.autoInit();
         }
 
         Action action=new Action();
@@ -120,7 +119,7 @@ public class Action {
 
 
     private String getStartMemLabel(){
-        String ret=FileSizer.formatFile(startMem.javaHeap)+","+FileSizer.formatFile(startMem.nativeheap)+","+startMem.power;
+        String ret= FileSizer.formatFile(startMem.javaHeap)+","+FileSizer.formatFile(startMem.nativeheap)+","+startMem.power;
         return ret;
     }
 
