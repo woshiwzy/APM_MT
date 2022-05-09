@@ -10,7 +10,7 @@
 
  **Android部分** ：主要通过插装的方法收集对应方法的执行时间，执行线程，可用内存等信息，然后生成一个文件 
 
- **Python 部分** ：利用生成的文件生成友好的可视图，[Python 源文件](./python/APM_MT.py)
+ **Python 部分** ：利用pyechats 生成图标，[Python 源文件](./python/APM_MT.py)
 
 APM(意思是Android 性能优化)，MT（Method Trace）
 
