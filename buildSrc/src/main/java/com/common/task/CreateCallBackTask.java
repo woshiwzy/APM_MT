@@ -44,7 +44,8 @@ public class CreateCallBackTask extends DefaultTask {
                 return;
             } else {
                 File parentFile = file.getParentFile();
-                parentFile.mkdirs();
+
+                parentFile.mkdirs();//创建包路径
             }
 
 //            String projectPath = PathUtils.getCurrentProjectPath();
@@ -54,6 +55,11 @@ public class CreateCallBackTask extends DefaultTask {
             String javaClass =
                     "package " + mtConfig.mtCallBackPackage + ";\n" +
                     "import android.util.Log;\n" +
+                    "import com.sand.apm.mtlib.Action;\n"+
+                    "import com.sand.apm.mtlib.KLog;\n"+
+                    "import com.sand.apm.mtlib.MTHelper;\n"+
+                    "import com.sand.apm.mtlib.Statistics;\n"+
+
                     "\n\n" +
                     "/*\n" +
                     "*这个类是MT插件自动生成的，done方法将被注入到方法类中" + "\n\n" +
@@ -63,27 +69,27 @@ public class CreateCallBackTask extends DefaultTask {
                     "\n*/\n\n" +
                     "public class MTCallBack{" +
                     "\n\n" +
-                      "   public static void "+callStaticMethodStart+"(long start){" +
-
-
+                      "   public static void "+callStaticMethodStart+"(long start){" +"\n\n" +
+                            //start 方法开始======================================
+                            "   String currentMethodName = MTHelper.getCurrentMethodName(Thread.currentThread().getStackTrace());"+ "\n\n" +
+                            "   Action action = Statistics.start(currentMethodName, start);"+ "\n\n" +
+                            "   KLog.d(\"mt\", \"mt_call_back_start==>\" + action.toLineString());"+ "\n\n" +
+                            //start 方法结束======================================
                             "\n\n" +
                             "   }"+
                             "\n\n" +
                     "   public static void " + callStaticMethodDone + "(long start){" +
 
+                            //end 方法开始======================================
                     "\n\n" +
-                    "   long end =  System.currentTimeMillis();\n\n"+
-                    "   long cost=end-start;\n\n"+
-                    "   StackTraceElement[] sts = Thread.currentThread().getStackTrace();\n\n"+
-                    "   //sts[3] 就是mtDone被调用所在的方法，也可以循环向上查询更深的栈层级\n\n"+
-                    "   String currentMethodName = sts[3].getClassName() + \".\" + sts[3].getMethodName();\n\n"+
-                    "   String mtLog = currentMethodName + \" 耗时:\" + cost+ \" ms,Thread.name:\"+Thread.currentThread().getName();\n\n"+
-                    "   System.out.println(mtLog);\n\n"+
-                    "   Log.d(\"mt\", mtLog);\n\n"+
-                    "   }" +
-                    "\n\n" +
-                    "}";
+                            "   String currentMethodName = MTHelper.getCurrentMethodName(Thread.currentThread().getStackTrace());"+"\n\n" +
+                            "   Action action = Statistics.finish(Action.createKey(currentMethodName, start));"+"\n\n" +
+                            "   if (null != action) {"+"\n\n" +
+                            "   KLog.d(\"mt\", \"mt_call_back_done==>\" + action.toLineString());"+"\n\n" +
 
+                    "   }   \n   }\n\n" +
+                    //end 方法结束======================================
+                    "   }";
             MTLog.redLog("最终将注入：" + javaFilePath + " 的"+MTConfig.MTMethodDone +"方法");
             FileUtils.writeByteArrayToFile(file, javaClass.getBytes());
         } catch (IOException e) {
