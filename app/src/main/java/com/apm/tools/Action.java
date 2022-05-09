@@ -12,6 +12,8 @@ import com.commontech.basemodule.utils.FileSizer;
 public class Action {
 
     private String methodName;
+    private String threadName;
+
     private long start;
     private long cost;
 
@@ -28,7 +30,7 @@ public class Action {
      * @param start
      * @return
      */
-    public static Action createFromStart(String methodName,long start){
+    public static Action createFromStart(String methodName,long start ){
         if(null==application){
             application=Statistics.autoInit();
         }
@@ -36,6 +38,7 @@ public class Action {
         Action action=new Action();
         action.setMethodName(methodName);
         action.setStart(start);
+        action.setThreadName(Thread.currentThread().getName());
 
         action.setStartMem(new MemStatics(MTHelper.getJavaHeap2(),MTHelper.getNativeHeap2(),MTHelper.getAppUseMem()));
 
@@ -130,7 +133,7 @@ public class Action {
     }
 
     public String toLineString(){
-        String line=methodName+","+start+","+getStartMemLabel()+","+cost+","+getEndMemLabel();
+        String line=threadName+","+methodName+","+start+","+getStartMemLabel()+","+cost+","+getEndMemLabel();
         return line;
     }
 
@@ -138,8 +141,13 @@ public class Action {
         return (0!=cost);
     }
 
+    public String getThreadName() {
+        return threadName;
+    }
 
-
+    public void setThreadName(String threadName) {
+        this.threadName = threadName;
+    }
 
     @Override
     public String toString() {

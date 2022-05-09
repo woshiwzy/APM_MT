@@ -91,9 +91,11 @@ public class Statistics {
 
 
     public static Action start(String currentMethodName,long start) {
+
         Action action=Action.createFromStart(currentMethodName,start);
         statisMap.put(action.getKey(), action);
         Log.d("mt", "mtstart====>:" + action.getMethodName());
+
         return action;
     }
 

@@ -3,7 +3,6 @@ package com.sand.apm.mt;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,7 +18,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Bitmap> bitmaps = new ArrayList<>();
     private ArrayList<SandObjectClass> sandsList = new ArrayList<>();
-
 
     private ImageView imageView;
     private Button buttonTest, buttonTest2;
@@ -75,8 +73,18 @@ public class MainActivity extends AppCompatActivity {
         buttonTest2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                KLog.d(App.tag,"电量:"+ PowerHelper.getBatter(getApplication()));
+                KLog.d(App.tag, "电量:" + PowerHelper.getBatter(getApplication()));
                 testDelay();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(6000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
             }
         });
 
@@ -86,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void testDelay() {
         try {
-            Thread.sleep(5* 1000);
+            Thread.sleep(6 * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
